@@ -8,7 +8,7 @@ const short = (value) => {
   return `...${value.substring(value.length - INITIAL_CHARACTERS_TO_SHOW, value.length)}`
 }
 
-const usage = `Usage: register <your_node_address>`
+const usage = `Usage: /register <your_node_address>`
 
 const confirmRegistration = (node, peerId, username, secret) =>
   node.send({
@@ -23,7 +23,6 @@ const confirmRegistration = (node, peerId, username, secret) =>
   })
 
 module.exports = new CommandBuilder()
-  .setName("register")
   .setAliases(["r"])
   .setOwnersOnly(false)
   .setGuildOnly(false)
