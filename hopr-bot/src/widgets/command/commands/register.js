@@ -47,10 +47,10 @@ module.exports = new CommandBuilder()
         if (!pin) {
           const secret = Math.floor(Math.random() * 1e6);
           Database.store(user.username, { id: user.id, peerId, secret });
-          await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);  
+          await message.channel.send(`🤖 Hi! I'll send ${peerId} a secret. Please send it back to me.`);  
           confirmRegistration(node, peerId, user.username, secret)
         } else {
-          await message.channel.send(`🤖 Verifying the secret ${pin} for ${peerId}.`);
+          await message.channel.send(`🤖 Verifying secret ${pin} for ${peerId}.`);
           const savedUser = Database.get(user.username)
           if (!savedUser) {
             await message.channel.send(`
@@ -60,8 +60,7 @@ module.exports = new CommandBuilder()
             return;
           } else {
             const { secret, peerId } = savedUser
-            console.log('Pin', pin)
-            console.log('Secret', secret)
+            // @TODO Migrate from '==' to '===' and cast pin as a number (currently a string)
             if (pin == secret) {
               await message.channel.send(`🤖 The secret ${pin} is correct. Registering your node, thank you!`);
               // @TODO: Update Discord nickname.
