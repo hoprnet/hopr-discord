@@ -12,8 +12,10 @@ const error = debug('hopr-bot:main:error')
 const main = async () => {
   log(`- main | Starting Bot Main`)
 
-  //const node = await new Core()
-  //await node.start()
+  // const node = await new Core()
+  // await node.start()
+  // const hoprAddress = await node.address('hopr')
+  // console.log('Hopr Address', hoprAddress)
 
   const client = new Client();
   const server = new Server();
