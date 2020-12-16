@@ -41,7 +41,7 @@ module.exports = new CommandBuilder()
         await message.channel.send(`🤖 ${maybePeerId} is not a valid HOPR node address`);
         return;
       } else {
-        
+
         const node = Database.getNode()
 
         if (!pin) {
@@ -50,7 +50,7 @@ module.exports = new CommandBuilder()
           await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);  
           confirmRegistration(node, peerId, user.username, secret)
         } else {
-          await message.channel.send(`🤖 ${peerId} verifying the secret ${pin}`);
+          await message.channel.send(`🤖 Verifying the secret ${pin} for ${peerId}.`);
           const savedUser = Database.get(user.username)
           if (!savedUser) {
             await message.channel.send(`
@@ -60,7 +60,9 @@ module.exports = new CommandBuilder()
             return;
           } else {
             const { secret, peerId } = savedUser
-            if (pin === secret) {
+            console.log('Pin', pin)
+            console.log('Secret', secret)
+            if (pin == secret) {
               await message.channel.send(`🤖 The secret ${pin} is correct. Registering your node, thank you!`);
               // @TODO: Update Discord nickname.
             } else {
