@@ -9,6 +9,7 @@ const confirmRegistration = (node, peerId, username, secret) =>
   node.send({
     peerId,
     payload: `
+
     🤖 User ${username} is trying to register this address in Discord. If this is you,
     please use code ${secret} with our Discord bot to confirm.
   `,
@@ -40,14 +41,16 @@ module.exports = new CommandBuilder()
         await message.channel.send(`🤖 ${maybePeerId} is not a valid HOPR node address`);
         return;
       } else {
+        
+        const node = Database.getNode()
+
         if (!pin) {
           const secret = Math.floor(Math.random() * 1e6);
           Database.store(user.username, { id: user.id, peerId, secret });
-          await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);
-          const node = Database.getNode()
+          await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);  
           confirmRegistration(node, peerId, user.username, secret)
         } else {
-          await message.channel.send(`🤖 ${peerId} verifying the secret ${secret}`);
+          await message.channel.send(`🤖 ${peerId} verifying the secret ${pin}`);
           const savedUser = Database.get(user.username)
           if (!savedUser) {
             await message.channel.send(`
