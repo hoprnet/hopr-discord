@@ -18,7 +18,7 @@ module.exports = new CommandBuilder()
     if (!maybePeerId) {
       await message.channel.send(`
         🤖 .register Allows you to register your HOPR node in our Discord server.
-        Usage: .register <your_node_address> [pin]
+        Usage: .register <your_node_address> [secret]
         `);
       return
     } else {
@@ -27,15 +27,20 @@ module.exports = new CommandBuilder()
       if (!peerId) {
         await message.channel.send(`🤖 ${maybePeerId} is not a valid HOPR node address`);
       } else {
-        Database.store(user.username, { id: user.id, peerId });
-        await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);
-        const node = Database.getNode()
-        node.send({
-          peerId,
-          payload: 'Hi there sucker',
-          intermediatePeerIds: [],
-          includeRecipient: true
-        })
+        if (!pin) {
+          const secret = Math.floor(Math.random() * 1e6);
+          Database.store(user.username, { id: user.id, peerId, secret });
+          await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);
+          const node = Database.getNode()
+          node.send({
+            peerId,
+            payload: ` 🤖 Username ${user.username} is registering your node in Discord. Please share ${secret} to confirm.`,
+            intermediatePeerIds: [],
+            includeRecipient: true
+          })
+        } else {
+          await message.channel.send(`🤖 ${peerId} verifying the secret ${secret}`);
+        }
       }
 
     }
