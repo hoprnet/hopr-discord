@@ -30,6 +30,9 @@ class Database {
   static getClient() {
     return this.client;
   }
+  static getNode() {
+    return this.node;
+  }
 }
 
 export default Database;
