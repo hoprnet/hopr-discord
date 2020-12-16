@@ -1,4 +1,6 @@
 import Core from './lib/hopr'
+import Server from './lib/server'
+import Database from './lib/db'
 import debug from 'debug'
 
 const { Client } = require("discord.js");
@@ -10,10 +12,12 @@ const error = debug('hopr-bot:main:error')
 const main = async () => {
   log(`- main | Starting Bot Main`)
 
-  const node = await new Core()
-  await node.start()
+  //const node = await new Core()
+  //await node.start()
 
   const client = new Client();
+  const server = new Server();
+  Database.init();
 
   require("./core/loadWidgetListeners")(client);
 

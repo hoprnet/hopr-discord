@@ -1,5 +1,8 @@
+import Database from '../../../lib/db'
+
 const utils = require("@hoprnet/hopr-utils");
 const CommandBuilder = require("../classes/CommandBuilder");
+
 
 module.exports = new CommandBuilder()
   .setOwnersOnly(false)
@@ -11,6 +14,11 @@ module.exports = new CommandBuilder()
   // eslint-disable-next-line
   .setExecute(async (message, user, args) => {
     const [maybePeerId] = args;
+
+    console.log('User', user);
+    console.log('Database Length', Database.dbLength())
+    Database.store(user.id, 'true');
+    
     if (!maybePeerId) {
       await message.channel.send(`
         🤖 .register Allows you to register your HOPR node in our Discord server.
