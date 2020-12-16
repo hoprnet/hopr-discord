@@ -10,8 +10,8 @@ import { encode, decode } from 'rlp'
 import debug from 'debug'
 
 
-const log = debug('hopr-chatbot:core')
-const error = debug('hopr-chatbot:core:error')
+const log = debug('hopr-bot:core')
+const error = debug('hopr-bot:core:error')
 
 export default class Core {
   public events: EventEmitter
@@ -70,7 +70,7 @@ export default class Core {
   }) {
     this.options = { 
       hosts: this.parseHost(options.host ?? "0.0.0.0:9091"),
-      provider: options.provider ?? 'wss://ws-mainnet.matic.network',
+      provider: options.provider ?? 'wss://bsc-ws-node.nariox.org:443',
       network: options.network ?? 'ETHEREUM',
       debug: options.debug ?? false,
       password: options.password ?? 'switzerland',

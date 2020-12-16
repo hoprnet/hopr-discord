@@ -11,9 +11,11 @@ type UserData = {
 class Database {
   static db: Map<string, UserData>
   static client: any
-  static init(client) {
+  static node: any
+  static init(client, node) {
     log(`- init | Starting Init`)
     this.db = new Map<string, UserData>()
+    this.node = node;
     this.client = client;
   }
   static store(key, value): void {

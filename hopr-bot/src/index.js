@@ -1,13 +1,18 @@
+import Web3 from 'web3'
+import debug from 'debug'
+
 import Core from './lib/hopr'
 import Database from './lib/db'
 import Server from './lib/server'
-import debug from 'debug'
+
 
 const { Client } = require("discord.js");
 const { token } = require("./config");
 
 const log = debug('hopr-bot:main')
 const error = debug('hopr-bot:main:error')
+const { fromWei } = Web3.utils
+
 
 const main = async () => {
   log(`- main | Starting Bot Main`)
@@ -19,13 +24,19 @@ const main = async () => {
       debug: Boolean(process.env.HOPR_DEBUG),
       password: process.env.HOPR_PASSWORD
   })
-  await node.start()
-  const hoprAddress = await node.address('hopr')
-  console.log('Hopr Address', hoprAddress)
 
   const client = new Client();
   const server = new Server();
-  Database.init(client);
+  await node.start()
+
+  const hoprAddress = await node.address('native')
+  const nativeAddress = await node.address('hopr')
+  const hoprBalance = await node.getHoprBalance();
+  const nativeBalance = await node.getBalance()
+  console.log('HOPR', hoprAddress, fromWei(hoprBalance));
+  console.log('Native', nativeAddress, fromWei(nativeBalance));
+
+  Database.init(client, node);
 
   require("./core/loadWidgetListeners")(client);
 
