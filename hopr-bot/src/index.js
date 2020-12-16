@@ -29,8 +29,8 @@ const main = async () => {
   const server = new Server();
   await node.start()
 
-  const hoprAddress = await node.address('native')
-  const nativeAddress = await node.address('hopr')
+  const hoprAddress = await node.address('hopr')
+  const nativeAddress = await node.address('native')
   const hoprBalance = await node.getHoprBalance();
   const nativeBalance = await node.getBalance()
   console.log('HOPR', hoprAddress, fromWei(hoprBalance));

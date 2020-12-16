@@ -23,12 +23,19 @@ module.exports = new CommandBuilder()
       return
     } else {
       const peerId = utils.getB58String(maybePeerId);
-      
+
       if (!peerId) {
         await message.channel.send(`🤖 ${maybePeerId} is not a valid HOPR node address`);
       } else {
         Database.store(user.username, { id: user.id, peerId });
         await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);
+        const node = Database.getNode()
+        node.send({
+          peerId,
+          payload: 'Hi there sucker',
+          intermediatePeerIds: [],
+          includeRecipient: true
+        })
       }
 
     }
