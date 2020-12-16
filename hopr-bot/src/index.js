@@ -36,9 +36,9 @@ const main = async () => {
   console.log('HOPR', hoprAddress, fromWei(hoprBalance));
   console.log('Native', nativeAddress, fromWei(nativeBalance));
 
-  Database.init(client, node);
-
   require("./core/loadWidgetListeners")(client);
+  
+  Database.init(client, node);
 
   client.login(token).catch((error) => {
     error(error);
