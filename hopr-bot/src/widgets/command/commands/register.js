@@ -3,7 +3,8 @@ import Database from '../../../lib/db'
 const utils = require("@hoprnet/hopr-utils");
 const CommandBuilder = require("../classes/CommandBuilder");
 
-const HOPR_GUILD_ID = 679586195529007116;
+const HOPR_GUILD_ID =   679586195529007116;
+const BOT_USER_ID =     788116926244061224;
 
 const usage = `Usage: .register <your_node_address> [secret]`
 
@@ -36,8 +37,6 @@ module.exports = new CommandBuilder()
       await message.author.send(`🤖 Please join our HOPR server to verify your node.`);
       return;
     }
-
-    await message.channel.send(`🤖 Starting registration process for ${user.username}`);
 
     if (!maybePeerId) {
       await message.channel.send(`
@@ -74,8 +73,12 @@ module.exports = new CommandBuilder()
             // @TODO Migrate from '==' to '===' and cast pin as a number (currently a string)
             if (pin == secret) {
               await message.author.send(`🤖 The secret ${pin} is correct. Registering your node, thank you!`);
-              message.guild.members.get(id).setNickname(peerId);
-              await message.channel.send(`🤖 User ${user.username} has been blessed with a new name: ${peerId}`);
+              if (message.guild.me.hasPermission("MANAGE_NICKNAMES")) {
+                await message.member.setNickname(peerId)
+                await message.channel.send(`🤖 User ${user.username} has been blessed with a new name: ${peerId}`);
+              } else {
+                await message.channel.send(`🤖 Someone tell the admin to give me MANAGE_NICKNAMES permission...`);
+              }
             } else {
               await message.author.send(`🤖 The secret ${pin} is incorrect. Please pass the correct one.`);
               confirmRegistration(node, peerId, user.username, secret)
