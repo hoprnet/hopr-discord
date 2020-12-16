@@ -15,9 +15,7 @@ module.exports = new CommandBuilder()
   .setExecute(async (message, user, args) => {
     const [maybePeerId] = args;
 
-    console.log('User', user);
-    console.log('Database Length', Database.dbLength())
-    Database.store(user.id, 'true');
+    Database.store(user.username, user.id);
     
     if (!maybePeerId) {
       await message.channel.send(`

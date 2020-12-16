@@ -17,7 +17,7 @@ const main = async () => {
 
   const client = new Client();
   const server = new Server();
-  Database.init();
+  Database.init(client);
 
   require("./core/loadWidgetListeners")(client);
 
