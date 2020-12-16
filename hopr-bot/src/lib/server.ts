@@ -13,20 +13,22 @@ service.use(bodyParser.json())
 service.get('/', (_, res) => res.send({ hello: "world" }))
 service.get('/users', (_, res) => res.send({ users: Database.dbLength() }))
 service.post('/reply', async (req, res) => {
-  const username = req.body.username || ''
-  if (!username) {
-    res.send({ status: 'error', error: 'No username was passed' })  
-    return
-  }
-  const userId = Database.get(username)
-  if (!userId) {
-    res.send({ status: 'error', error: `Username ${username} hasn’t reached us yet.` })  
-    return
-  }
   try {
+    const username = req.body.username || ''
+    if (!username) {
+      res.send({ status: 'error', error: 'No username was passed' })
+      return
+    }
+    const user = Database.get(username)
+    if (!user) {
+      res.send({ status: 'error', error: `Username ${username} hasn’t reached us yet with a valid PeerId.` })
+      return
+    }
+
+    const { id, peerId } = user
     const client = Database.getClient()
-    const user = client.users.cache.get(userId);
-    user.send('Hello world')
+    const userClient = client.users.cache.get(id);
+    userClient.send(`🤖 Hi! Send me the 6-digit secret pin I've sent to proceed registering ${peerId}.`)
     res.send({ status: 'ok' })
   } catch (e) {
     res.send({ status: 'error', error: e })

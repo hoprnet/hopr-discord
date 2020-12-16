@@ -13,10 +13,8 @@ module.exports = new CommandBuilder()
   .setDisabled(false)
   // eslint-disable-next-line
   .setExecute(async (message, user, args) => {
-    const [maybePeerId] = args;
+    const [maybePeerId, pin] = args;
 
-    Database.store(user.username, user.id);
-    
     if (!maybePeerId) {
       await message.channel.send(`
         🤖 .register Allows you to register your HOPR node in our Discord server.
@@ -24,11 +22,13 @@ module.exports = new CommandBuilder()
         `);
       return
     } else {
-      const peerId = utils.hasB58String(maybePeerId) && maybePeerId;
+      const peerId = utils.getB58String(maybePeerId);
+      
       if (!peerId) {
         await message.channel.send(`🤖 ${maybePeerId} is not a valid HOPR node address`);
       } else {
-        await message.channel.send(`🤖 We have a peer Id, yay`);
+        Database.store(user.username, { id: user.id, peerId });
+        await message.channel.send(`🤖 Hi! Will proceed to send ${peerId} a message.`);
       }
 
     }

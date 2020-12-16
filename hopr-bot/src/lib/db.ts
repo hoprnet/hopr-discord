@@ -3,18 +3,23 @@ import debug from 'debug'
 const log = debug('hopr-bot:db')
 const error = debug('hopr-bot:db:error')
 
+type UserData = {
+  id: string,
+  peerId: string
+}
+
 class Database {
-  static db: Map<string, string>
+  static db: Map<string, UserData>
   static client: any
   static init(client) {
     log(`- init | Starting Init`)
-    this.db = new Map<string, string>()
+    this.db = new Map<string, UserData>()
     this.client = client;
   }
   static store(key, value): void {
     this.db[key] = value
   }
-  static get(key): string {
+  static get(key): UserData {
     return this.db[key]
   }
   static dbLength(): number {
