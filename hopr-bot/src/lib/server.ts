@@ -37,8 +37,8 @@ service.post('/reply', async (req, res) => {
 
 const main = () => {
   log(`- main | Starting Server`)
-  http.createServer(service).listen(3001, "0.0.0.0", () => {
-    log(`- main | createServer :: Rest server on 0.0.0.0 listening on port 3001`)
+  http.createServer(service).listen(3001, "localhost", () => {
+    log(`- main | createServer :: Rest server on localhost listening on port 3001`)
   })
 }
 

@@ -3,8 +3,10 @@ import Database from '../../../lib/db'
 const utils = require("@hoprnet/hopr-utils");
 const CommandBuilder = require("../classes/CommandBuilder");
 
-const HOPR_GUILD_ID =   679586195529007116;
-const BOT_USER_ID =     788116926244061224;
+const short = (value) => {
+  const INITIAL_CHARACTERS_TO_SHOW = 6
+  return `...${value.substring(value.length - INITIAL_CHARACTERS_TO_SHOW, value.length)}`
+}
 
 const usage = `Usage: .register <your_node_address> [secret]`
 
@@ -74,7 +76,7 @@ module.exports = new CommandBuilder()
             if (pin == secret) {
               await message.author.send(`🤖 The secret ${pin} is correct. Registering your node, thank you!`);
               if (message.guild.me.hasPermission("MANAGE_NICKNAMES")) {
-                await message.member.setNickname(peerId)
+                await message.member.setNickname(`${user.username} - ${short(peerId)}`)
                 await message.channel.send(`🤖 User ${user.username} has been blessed with a new name: ${peerId}`);
               } else {
                 await message.channel.send(`🤖 Someone tell the admin to give me MANAGE_NICKNAMES permission...`);
