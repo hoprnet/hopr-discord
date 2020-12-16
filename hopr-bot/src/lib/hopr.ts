@@ -2,7 +2,7 @@ import Hopr from '@hoprnet/hopr-core'
 import type { HoprOptions } from '@hoprnet/hopr-core'
 import type { Types } from '@hoprnet/hopr-core-connector-interface'
 import HoprCoreConnector, { Currencies } from '@hoprnet/hopr-core-connector-interface'
-import { getBootstrapAddresses, u8aToHex, parseHosts } from '@hoprnet/hopr-utils'
+import { getBootstrapAddresses, u8aToHex } from '@hoprnet/hopr-utils'
 import BN from 'bn.js'
 import PeerId from 'peer-id'
 import { EventEmitter } from 'events'
@@ -45,16 +45,38 @@ export default class Core {
     }
   }
 
-  constructor(
-    options: HoprOptions = {
-      provider: process.env.HOPR_CHATBOT_PROVIDER || 'wss://ws-mainnet.matic.network',
-      network: process.env.HOPR_CHATBOT_NETWORK || 'ETHEREUM',
-      debug: Boolean(process.env.HOPR_CHABOT_DEBUG) || false,
-      password: process.env.HOPR_CHATBOT_PASSWORD || 'switzerland',
-      hosts: parseHosts()
-    },
-  ) {
-    this.options = { ...options, output: this._functor.bind(this) }
+  private parseHost(host: string): HoprOptions['hosts'] {
+      const hosts = {}
+      const str = host.replace(/\/\/.+/, '').trim()
+      const params = str.match(/([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\:([0-9]{1,6})/)
+      if (params == null || params.length != 3) {
+        throw Error(`Invalid IPv4 host. Got ${str}`)
+      }
+
+      hosts["ip4"] = {
+        ip: params[1],
+        port: parseInt(params[2])
+      }
+
+      return hosts
+  }
+
+  constructor(options: {
+    host?: string
+    provider?: string
+    network?: string
+    debug?: boolean
+    password?: string
+  }) {
+    this.options = { 
+      hosts: this.parseHost(options.host ?? "0.0.0.0:9091"),
+      provider: options.provider ?? 'wss://ws-mainnet.matic.network',
+      network: options.network ?? 'ETHEREUM',
+      debug: options.debug ?? false,
+      password: options.password ?? 'switzerland',
+      createDbIfNotExist: true,
+      output: this._functor.bind(this),
+    }
     this.events = new EventEmitter()
   }
 

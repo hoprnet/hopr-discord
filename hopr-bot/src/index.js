@@ -1,6 +1,6 @@
 import Core from './lib/hopr'
-import Server from './lib/server'
 import Database from './lib/db'
+import Server from './lib/server'
 import debug from 'debug'
 
 const { Client } = require("discord.js");
@@ -12,10 +12,16 @@ const error = debug('hopr-bot:main:error')
 const main = async () => {
   log(`- main | Starting Bot Main`)
 
-  // const node = await new Core()
-  // await node.start()
-  // const hoprAddress = await node.address('hopr')
-  // console.log('Hopr Address', hoprAddress)
+  const node = new Core({
+      host: process.env.HOPR_HOST,
+      provider: process.env.HOPR_PROVIDER,
+      network: process.env.HOPR_NETWORK,
+      debug: Boolean(process.env.HOPR_DEBUG),
+      password: process.env.HOPR_PASSWORD
+  })
+  await node.start()
+  const hoprAddress = await node.address('hopr')
+  console.log('Hopr Address', hoprAddress)
 
   const client = new Client();
   const server = new Server();
