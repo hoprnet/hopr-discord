@@ -41,7 +41,7 @@ module.exports = new CommandBuilder()
 
     if (!maybePeerId) {
       await message.channel.send(`
-        🤖  register Allows you to register your HOPR node in our Discord server.
+        🤖 Allows you to register your HOPR node in our Discord server.
         ${usage}
         `);
       return;
