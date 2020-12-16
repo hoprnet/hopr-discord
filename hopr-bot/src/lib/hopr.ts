@@ -63,7 +63,7 @@ export default class Core {
       log('- start | Creating HOPR Node')
       this.node = await Hopr.create({
         ...this.options,
-        bootstrapServers: [...(await getBootstrapAddresses()).values()],
+        bootstrapServers: Array.from((await getBootstrapAddresses()).values()),
       })
       log('- start | Created HOPR Node')
       this.started = true
@@ -85,7 +85,7 @@ export default class Core {
 
   @Core.mustBeStarted()
   getBootstrapServers(): string {
-      return this.node.bootstrapServers.map(node => node.id.toB58String()).join(',')
+      return this.node.bootstrapServers.map(node => node.getPeerId()).join(',')
   }
 
   @Core.mustBeStarted()
@@ -104,7 +104,7 @@ export default class Core {
   @Core.mustBeStarted()
   async openPaymentChannel(counterParty: PeerId, amountToFund: BN) {
     const { utils, types, account } = this.node.paymentChannels
-    const self = this.node.peerInfo.id
+    const self = this.node.getId()
 
     const channelId = await utils.getId(
       await utils.pubKeyToAccountId(self.pubKey.marshal()),
@@ -140,21 +140,15 @@ export default class Core {
 
     await this.node.paymentChannels.channel.create(
       counterParty.pubKey.marshal(),
-      async () => this.node.interactions.payments.onChainKey.interact(counterParty),
+      async () => this.node._interactions.payments.onChainKey.interact(counterParty),
       channelBalance,
       (balance: Types.ChannelBalance): Promise<Types.SignedChannel> =>
-        this.node.interactions.payments.open.interact(counterParty, balance)
+        this.node._interactions.payments.open.interact(counterParty, balance)
     )
 
     return {
       channelId
     }
-
-  }
-
-  @Core.mustBeStarted()
-  listConnectedPeers(): number {
-      return Array.from(this.node.peerStore.peers.values()).length
   }
 
   @Core.mustBeStarted()
@@ -184,9 +178,9 @@ export default class Core {
   @Core.mustBeStarted()
   async address(type: 'native' | 'hopr'): Promise<string> {
     if (type === 'native') {
-      return this.node.paymentChannels.utils.pubKeyToAccountId(this.node.peerInfo.id.pubKey.marshal()).then(u8aToHex)
+      return this.node.paymentChannels.utils.pubKeyToAccountId(this.node.getId().pubKey.marshal()).then(u8aToHex)
     } else {
-      return this.node.peerInfo.id.toB58String()
+      return this.node.getId().toB58String()
     }
   }
 }
