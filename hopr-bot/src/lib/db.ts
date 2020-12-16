@@ -5,7 +5,8 @@ const error = debug('hopr-bot:db:error')
 
 type UserData = {
   id: string,
-  peerId: string
+  peerId: string,
+  secret: number
 }
 
 class Database {
